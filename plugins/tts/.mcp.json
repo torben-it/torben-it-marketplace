@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "tts": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "tts"],
+      "env": {
+        "TTS_STATE_DIR": "${CLAUDE_PLUGIN_DATA}",
+        "FASTMCP_SHOW_SERVER_BANNER": "false",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      }
+    }
+  }
+}
