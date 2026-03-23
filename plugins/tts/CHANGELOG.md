@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-03-23
+
+### Changed
+- **BREAKING:** Reverted environment variables back to `TTS_READER_` prefix: `TTS_READER_URL`, `TTS_READER_VOICE`, `TTS_READER_MODEL`, `TTS_READER_DEBUG`
+- Handle unexpanded environment variables in MCP tools gracefully instead of failing
+
+### Added
+- `TTS_READER_API_KEY` environment variable for Bearer token authentication with OpenAI-compatible TTS servers
+- `scripts/release.sh` — automated release script that bumps versions, generates changelog from git history, commits, and tags
+- MCP server configuration (`.mcp.json`) for plugin server setup
+
+### Fixed
+- VCS mappings and plugin marketplace path resolution
+- Stray backtick artifacts in CHANGELOG formatting
+
 ## [2.0.2] - 2026-03-23
 
 ### Fixed
@@ -16,11 +31,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/release.sh` — release-script der bumper version i `plugin.json` + `pyproject.toml`, opdaterer CHANGELOG, committer og tagger
 
 ## [2.0.0] - 2026-03-23
-``
+
 ### Changed
 - **BREAKING:** Renamed plugin from `tts-reader` to `tts`
 - **BREAKING:** Renamed Python package from `tts_reader` to `tts`
-- **BREAKING:** Renamed environment variables: `TTS_READER_URL` → `TTS_URL`, `TTS_READER_VOICE` → `TTS_VOICE`, `TTS_READER_MODEL` → `TTS_MODEL`, `TTS_R````EADER_DEBUG` → `TTS_DEBUG`
+- **BREAKING:** Renamed environment variables: `TTS_READER_URL` → `TTS_URL`, `TTS_READER_VOICE` → `TTS_VOICE`, `TTS_READER_MODEL` → `TTS_MODEL`, `TTS_READER_DEBUG` → `TTS_DEBUG`
 - **BREAKING:** Config file moved from `~/.config/tts-reader.env` to `~/.config/tts.env`
 - Plugin commands now use `/tts:on`, `/tts:off`, `/tts:status`, `/tts:stop` prefix
 
@@ -38,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1] - 2026-03-22
 
-### Changed``
+### Changed
 - Switched audio playback from `simpleaudio` to `sounddevice` with streaming chunks (~85ms latency)
 - Unified hook config into single `hooks.json` (removed `hooks/stop.json`)
 - Plugin now uses `CLAUDE_PLUGIN_ROOT` and `CLAUDE_PLUGIN_DATA` environment variables
