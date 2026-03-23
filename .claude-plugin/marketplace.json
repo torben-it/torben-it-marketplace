@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "torben-it",
+  "version": "1.0.0",
+  "description": "Claude Code plugins published by Torben IT",
+  "owner": {
+    "name": "Torben IT",
+    "email": "contact@torbenit.dk"
+  },
+  "plugins": [
+    {
+      "name": "tts",
+      "description": "Text-to-speech plugin",
+      "source": "./plugins/tts"
+    }
+  ]
+}
