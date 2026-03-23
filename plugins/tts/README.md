@@ -20,12 +20,13 @@ Then reload:
 
 ## Usage
 
-Toggle TTS on or off, or check status:
+Toggle TTS on or off, check status, or stop current tts-playing:
 
 ```
 /tts:on
 /tts:off
 /tts:status
+/tts:stop
 ```
 
 When enabled, every Claude response is automatically sent to a TTS server and played back through your speakers.
