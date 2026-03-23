@@ -4,7 +4,7 @@ A Claude Code plugin that hooks into Claude's response lifecycle, sends the text
 
 ## Installation
 ```
-/plugin marketplace add ./torben-it
+/plugin marketplace add torben-it/torben-it-marketplace
 /plugin install tts@torben-it
 ```
 
