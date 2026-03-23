@@ -6,7 +6,9 @@ from pathlib import Path
 
 from tts.server import mcp
 
-STATE_DIR = Path(os.environ.get("TTS_STATE_DIR", Path.home() / ".claude"))
+_raw = os.environ.get("TTS_STATE_DIR", "")
+STATE_DIR = Path(_raw) if _raw and not _raw.startswith("$") else Path.home() / ".claude"
+STATE_DIR.mkdir(parents=True, exist_ok=True)
 STATE_FILE = STATE_DIR / ".tts-enabled"
 
 
