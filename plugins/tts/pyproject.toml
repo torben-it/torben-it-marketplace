@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tts"
+version = "2.0.0"
+description = "Minimal TTS plugin for Claude Code - reads responses aloud"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp",
+    "sounddevice",
+]
+
+[project.scripts]
+tts = "tts.__main__:main"

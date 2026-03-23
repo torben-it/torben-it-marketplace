@@ -1,0 +1,40 @@
+{
+    "hooks": {
+        "Stop": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/read-response.sh\"",
+                        "timeout": 60
+                    }
+                ]
+            }
+        ],
+    "UserPromptSubmit": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-playback.sh\"",
+                        "timeout": 5
+                    }
+                ]
+            }
+        ],
+    "SessionStart": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/ensure-installed.sh\"",
+                        "timeout": 60
+                    }
+                ]
+            }
+        ]
+    }
+}
