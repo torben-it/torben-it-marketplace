@@ -4,7 +4,5 @@ __pycache__/
 *.egg-info/
 dist/
 .orphaned_at
-.idea/workspace.xml
-.idea/php.xml
-*.iml
+.idea/
 .claude/settings.local.json

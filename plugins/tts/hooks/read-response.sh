@@ -61,8 +61,6 @@ fi
 
 # ── TTS config (override via ~/.config/tts.env) ───────────────
 TTS_URL="${TTS_URL:-https://tts.torbenit.online/v1/audio/speech}"
-VOICE_ID="${TTS_VOICE:-4RklGmuxoAskAbGXplXN}"
-MODEL="${TTS_MODEL:-eleven_multilingual_v2}"
 TTS_API_KEY="${TTS_API_KEY:-}"
 TTS_DEBUG="${TTS_DEBUG:-0}"
 
@@ -87,6 +85,12 @@ if [ -f "$PID_FILE" ]; then
   rm -f "$PID_FILE"
 fi
 
+# ── Build JSON payload (only include voice/model if env vars are set) ────
+TTS_PAYLOAD=$(jq -n --arg t "$TEXT" \
+  --arg v "${TTS_VOICE:-}" \
+  --arg m "${TTS_MODEL:-}" \
+  '{input: $t} + (if $v != "" then {voice: $v} else {} end) + (if $m != "" then {model: $m} else {} end)')
+
 # ── Send to TTS and stream via sounddevice (in background, non-blocking)
 (
   if [ "${TTS_DEBUG:-0}" = "1" ]; then
@@ -96,11 +100,7 @@ fi
     curl -sS -X POST "$TTS_URL" \
       -H "Content-Type: application/json" \
       "${AUTH_HEADER[@]}" \
-      -d "$(jq -n --arg t "$TEXT" --arg v "$VOICE_ID" --arg m "$MODEL" '{
-        input: $t,
-        voice: $v,
-        model: $m
-      }')" \
+      -d "$TTS_PAYLOAD" \
       --output - \
     | TTS_DEBUG=1 TTS_HOOK_START="$T_START" TTS_TIMING_FILE="$PLAY_TIMING" \
       uv run --directory "$PLUGIN_DIR" python -m tts.play
@@ -111,11 +111,7 @@ fi
     curl -sS -X POST "$TTS_URL" \
       -H "Content-Type: application/json" \
       "${AUTH_HEADER[@]}" \
-      -d "$(jq -n --arg t "$TEXT" --arg v "$VOICE_ID" --arg m "$MODEL" '{
-        input: $t,
-        voice: $v,
-        model: $m
-      }')" \
+      -d "$TTS_PAYLOAD" \
       --output - \
     | uv run --directory "$PLUGIN_DIR" python -m tts.play 2>/dev/null
   fi

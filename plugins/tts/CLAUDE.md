@@ -8,7 +8,8 @@ tts/
 ├── commands/             # User-facing slash commands (/tts:on, /tts:off, /tts:status)
 ├── hooks/
 │   ├── read-response.sh  # Main hook script: extracts text, calls TTS, streams audio
-│   └── hooks.json            # Hook registration (Stop + SessionStart events)
+│   ├── stop-playback.sh  # UserPromptSubmit hook: stops playback when user types
+│   └── hooks.json            # Hook registration (Stop, UserPromptSubmit, SessionStart)
 ├── scripts/
 │   └── ensure-installed.sh  # SessionStart hook: auto-installs dependencies via uv
 ├── skills/tts/           # /tts skill definition (contextual guide)
@@ -17,7 +18,7 @@ tts/
 │   ├── server.py         # FastMCP server instance
 │   ├── play.py           # Audio player: reads PCM from stdin, streams via sounddevice
 │   └── tools/
-│       └── toggle.py     # MCP tools: tts_on, tts_off, tts_status
+│       └── controls.py   # MCP tools: tts_on, tts_off, tts_status, tts_stop
 └── .mcp.json             # MCP server config (used by plugin system)
 ```
 
@@ -30,7 +31,8 @@ tts/
    - Extracts `last_assistant_message` from hook JSON input
    - Strips markdown, sends to TTS API, pipes audio to `play.py`
    - Runs in background to never block Claude
-3. **SessionStart hook** (`scripts/ensure-installed.sh`) auto-installs dependencies on session start
+3. **UserPromptSubmit hook** (`hooks/stop-playback.sh`) stops any active playback when the user starts typing
+4. **SessionStart hook** (`scripts/ensure-installed.sh`) auto-installs dependencies on session start
 
 ## Development
 
