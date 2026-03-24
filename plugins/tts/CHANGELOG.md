@@ -5,9 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.4] - 2026-03-24
+
+
+
+### Changed
+
+- Added `author` field to plugin manifest
+- Normalized JSON formatting in `hooks.json` (consistent 2-space indentation, trailing newline)
+- Removed blank lines between version headers and category sections in CHANGELOG
+- Translated remaining Danish entries in CHANGELOG to English
+
 ## [3.0.3] - 2026-03-24
-
-
 
 ### Changed
 
@@ -15,8 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-push commit and tag after release instead of manual push step
 
 ## [3.0.2] - 2026-03-24
-
-
 
 ### Changed
 - Simplified `.gitignore` to ignore entire `.idea/` directory instead of individual files
@@ -54,12 +61,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.2] - 2026-03-23
 
 ### Fixed
-- MCP tools håndterer nu uexpanderede `${CLAUDE_PLUGIN_DATA}`-værdier gracefully (falder tilbage til `~/.claude`)
+- MCP tools now handle unexpanded `${CLAUDE_PLUGIN_DATA}` values gracefully (falls back to `~/.claude`)
 
 ## [2.0.1] - 2026-03-23
 
 ### Added
-- `scripts/release.sh` — release-script der bumper version i `plugin.json` + `pyproject.toml`, opdaterer CHANGELOG, committer og tagger
+- `scripts/release.sh` — release script that bumps version in `plugin.json` + `pyproject.toml`, updates CHANGELOG, commits and tags
 
 ## [2.0.0] - 2026-03-23
 
