@@ -138,9 +138,11 @@ mv "${CHANGELOG}.tmp" "$CHANGELOG"
 # --- Commit & tag ---
 cd "$ROOT"
 git add "$PLUGIN_JSON" "$PYPROJECT" "$CHANGELOG"
-git commit -m "release v$NEW"
-git tag "v$NEW"
+git commit -m "release tts v$NEW"
+git tag "tts/v$NEW"
 
 echo ""
-echo "Done: v$NEW committed and tagged."
-echo "Push med: git push && git push --tags"
+echo "Pushing tts/v$NEW..."
+git push && git push origin "tts/v$NEW"
+
+echo "Done: tts v$NEW released and pushed."
