@@ -60,11 +60,11 @@ fi
 [ -f "$HOME/.config/tts.env" ] && source "$HOME/.config/tts.env"
 
 # ── TTS config (override via ~/.config/tts.env) ───────────────
-TTS_URL="${TTS_READER_URL:-https://tts.torbenit.online/v1/audio/speech}"
-VOICE_ID="${TTS_READER_VOICE:-4RklGmuxoAskAbGXplXN}"
-MODEL="${TTS_READER_MODEL:-eleven_multilingual_v2}"
-TTS_API_KEY="${TTS_READER_API_KEY:-}"
-TTS_DEBUG="${TTS_READER_DEBUG:-0}"
+TTS_URL="${TTS_URL:-https://tts.torbenit.online/v1/audio/speech}"
+VOICE_ID="${TTS_VOICE:-4RklGmuxoAskAbGXplXN}"
+MODEL="${TTS_MODEL:-eleven_multilingual_v2}"
+TTS_API_KEY="${TTS_API_KEY:-}"
+TTS_DEBUG="${TTS_DEBUG:-0}"
 
 # ── Build auth header (OpenAI-compatible Bearer token) ─────────
 AUTH_HEADER=()

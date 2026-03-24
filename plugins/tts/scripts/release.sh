@@ -46,39 +46,94 @@ sed -i "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW\"/" "$PLUGIN_JSON"
 # --- Update pyproject.toml ---
 sed -i "s/^version = \"$CURRENT\"/version = \"$NEW\"/" "$PYPROJECT"
 
-# --- Update CHANGELOG.md ---
-# Insert new section after the semver preamble line
-HEADER="## [$NEW] - $TODAY"
-TEMPLATE="$HEADER
+# --- Generate changelog entry via AI ---
+echo "Generating changelog from git history..."
 
-### Added
+# Find the last tag to diff against
+LAST_TAG=$(git -C "$ROOT" describe --tags --abbrev=0 2>/dev/null || echo "")
+
+if [[ -n "$LAST_TAG" ]]; then
+    DIFF_RANGE="${LAST_TAG}..HEAD"
+    GIT_LOG=$(git -C "$ROOT" log --oneline "$DIFF_RANGE" -- .)
+    GIT_DIFF=$(git -C "$ROOT" diff "$DIFF_RANGE" -- . ':!*.lock')
+else
+    GIT_LOG=$(git -C "$ROOT" log --oneline -- .)
+    GIT_DIFF=$(git -C "$ROOT" diff HEAD -- . ':!*.lock')
+fi
+
+# Also include any uncommitted changes (staged + unstaged)
+UNCOMMITTED=$(git -C "$ROOT" diff HEAD -- . ':!*.lock' 2>/dev/null || true)
+
+PROMPT="You are writing a CHANGELOG entry for version $NEW of a Claude Code TTS plugin.
+
+The format MUST follow Keep a Changelog (https://keepachangelog.com/en/1.1.0/).
+Output ONLY the entry body — no version header, no markdown fences, no preamble.
+Use the categories: ### Added, ### Changed, ### Fixed, ### Removed — but ONLY include categories that have entries.
+Each bullet should be concise (one line). Write in English.
+
+Previous version: $CURRENT
+Bump type: $BUMP_TYPE
+
+Git log since last release:
+$GIT_LOG
+
+Diff since last release (truncated):
+${GIT_DIFF:0:8000}
+
+Uncommitted changes:
+${UNCOMMITTED:0:4000}"
+
+CHANGELOG_BODY=$(echo "$PROMPT" | claude --print 2>/dev/null)
+
+if [[ -z "$CHANGELOG_BODY" ]]; then
+    echo "error: claude CLI failed to generate changelog. Is it installed?" >&2
+    echo "Falling back to empty template."
+    CHANGELOG_BODY="### Added
 
 ### Changed
 
-### Fixed
-"
-
-# Insert after the line matching "adheres to Semantic Versioning"
-sed -i "/adheres to \[Semantic Versioning\]/a\\
-\\
-$HEADER\\
-\\
-### Added\\
-\\
-### Changed\\
-\\
-### Fixed" "$CHANGELOG"
-
-# --- Open editor for changelog ---
-if [[ -n "${EDITOR:-}" ]]; then
-    echo "Opening CHANGELOG.md in \$EDITOR..."
-    "$EDITOR" "$CHANGELOG"
-else
-    echo ""
-    echo "Rediger CHANGELOG.md med dine ændringer, og tryk Enter når du er klar."
-    echo "  $CHANGELOG"
-    read -r
+### Fixed"
 fi
+
+echo ""
+echo "── Generated changelog ──"
+echo "$CHANGELOG_BODY"
+echo "─────────────────────────"
+echo ""
+
+# Ask for confirmation
+read -rp "Accept this changelog? [Y/n/e(dit)] " REPLY
+case "${REPLY:-Y}" in
+    [nN])
+        echo "Aborted. Version files already bumped — revert with: git checkout $PLUGIN_JSON $PYPROJECT"
+        exit 1
+        ;;
+    [eE])
+        TMPFILE=$(mktemp /tmp/changelog-entry.XXXXXX.md)
+        echo "$CHANGELOG_BODY" > "$TMPFILE"
+        "${EDITOR:-vi}" "$TMPFILE"
+        CHANGELOG_BODY=$(cat "$TMPFILE")
+        rm -f "$TMPFILE"
+        ;;
+esac
+
+# --- Insert into CHANGELOG.md ---
+HEADER="## [$NEW] - $TODAY"
+
+# Build the full entry block
+ENTRY="$HEADER
+
+$CHANGELOG_BODY"
+
+# Create temp file with new entry inserted after the semver preamble
+{
+    sed -n '1,/adheres to \[Semantic Versioning\]/p' "$CHANGELOG"
+    echo ""
+    echo "$ENTRY"
+    sed '1,/adheres to \[Semantic Versioning\]/d' "$CHANGELOG"
+} > "${CHANGELOG}.tmp"
+
+mv "${CHANGELOG}.tmp" "$CHANGELOG"
 
 # --- Commit & tag ---
 cd "$ROOT"

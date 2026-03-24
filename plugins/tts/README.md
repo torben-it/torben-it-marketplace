@@ -74,6 +74,7 @@ To use a different TTS server, voice, or model, create `~/.config/tts.env` to ov
 | `TTS_URL` | TTS server endpoint | `https://tts.torbenit.online/v1/audio/speech` |
 | `TTS_VOICE` | Voice ID — passed through to the underlying TTS provider | _(server default)_ |
 | `TTS_MODEL` | TTS model name — passed through to the provider | _(server default)_ |
+| `TTS_API_KEY` | API key — sent as `Authorization: Bearer <key>` (OpenAI-compatible) | _(none)_ |
 | `TTS_DEBUG` | Enable timing logs | `0` |
 
 ### Where to set them
@@ -87,6 +88,7 @@ One straightforward option is to create a config file at `~/.config/tts.env`:
 TTS_URL="http://localhost:8880/v1/audio/speech"
 TTS_VOICE="my-voice-id"
 TTS_MODEL="my-model"
+TTS_API_KEY="sk-your-api-key-here"
 TTS_DEBUG=0
 ```
 
